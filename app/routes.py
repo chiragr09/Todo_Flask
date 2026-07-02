@@ -6,4 +6,14 @@ from app import app
 @app.route('/index')
 def index():
     user = {"username": "Capybara"}
-    return render_template('index.html', title='Home', user=user)
+    todoList = [
+        {
+            'taskname': 'Write back to Anil',
+            'completed': 'Yes'
+        },
+        {
+            'taskname': 'Cook dinner',
+            'completed': 'No'
+        }
+    ]
+    return render_template('index.html', title='Home', user=user, todoList=todoList)
