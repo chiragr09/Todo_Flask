@@ -1,4 +1,4 @@
-from flask import render_template, flash, redirect
+from flask import render_template, flash, redirect, url_for
 from app import app
 from app.forms import AddTaskForm
 
@@ -23,5 +23,5 @@ def addtask():
     form = AddTaskForm()
     if form.validate_on_submit():
         flash('Added the task successfully')
-        return redirect('/index')
+        return redirect(url_for('index'))
     return render_template('addtask.html', title='Add a task', form=form)

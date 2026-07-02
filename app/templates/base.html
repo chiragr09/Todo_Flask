@@ -10,8 +10,8 @@
 	<body>
 		<div>
 			Todo App:
-			<a href="/index">Home</a>
-			<a href="/addtask">Add a new task</a>
+			<a href="{{ url_for('index') }}">Home</a>
+			<a href="{{ url_for('addtask') }}">Add a new task</a>
 		</div>
 		<hr>
 		{% with messages = get_flashed_messages() %}
