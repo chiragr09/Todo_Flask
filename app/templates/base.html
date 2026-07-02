@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+	<head>
+		{% if title %}
+		<title>{{ title }} - Todo App</title>
+		{% else %}
+		<title>Todo App</title>
+		{% endif %}
+	</head>
+	<body>
+		<div>
+			Todo App:
+			<a href="/index">Home</a>
+			<a href="/addtask">Add a new task</a>
+		</div>
+		<hr>
+		{% with messages = get_flashed_messages() %}
+		{% if messages %}
+		<ul>
+			{% for message in messages %}
+			<li>{{ message }}</li>
+			{% endfor %}
+		</ul>
+		{% endif %}
+		{% endwith %}
+		{% block content %}{% endblock %}
+	</body>
+</html>

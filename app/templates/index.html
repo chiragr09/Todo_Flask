@@ -1,18 +1,9 @@
-<!doctype html>
-<html>
-	<head>
-		{% if title %}
-		<title>{{ title }} - TODO </title>
-		{% else %}
-		<title>Welcome to TODO application</title}
-		{% endif %}
-	</head>
-	<body>
-		<h1>Hello, {{ user.username }}!</h1>
-		<h2>Here are the tasks of the day!</h2>
-		{% for todoTask in todoList %}
-		<div><p>{{ todoTask.taskname }} : <b>{{ todoTask.completed}}</b></p></div>
-		{% endfor %}
-	</body>
-</html>
+{% extends "base.html" %}
 
+{% block content %}
+	<h1>Hello, {{ user.username }}!</h1>
+	<h2>Here are the tasks of the day!</h2>
+	{% for todoTask in todoList %}
+	<div><p>{{ todoTask.taskname }} : <b>{{ todoTask.completed}}</b></p></div>
+	{% endfor %}
+{% endblock %}
