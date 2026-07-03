@@ -1,5 +1,5 @@
 __pycache__
-app/__pycache__
+backend/app/__pycache__
 venvlocal
-config.py
-app/database/__pycache__
+backend/config.py
+backend/app/database/__pycache__
