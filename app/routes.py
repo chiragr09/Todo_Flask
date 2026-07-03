@@ -1,64 +1,46 @@
-from flask import jsonify, request
+from flask import Response, request, jsonify
 from app import app
-from app.forms import AddTaskForm, UpdateTaskForm
 from marshmallow import ValidationError
-
-tasks = [
-    {
-        "taskId": 1,
-        "taskname": "Write back to Anil",
-        "completed": True
-    },
-    {
-        "taskId": 2,
-        "taskname": "Cook dinner",
-        "completed": False
-    }
-]
-
-schema = AddTaskForm()
-update_schema = UpdateTaskForm()
+from app.database.db import mongo
 
 @app.get("/tasks")
 def get_tasks():
-    response = {
-      "user": {
-        "username":"Capybara"
-      },
-      "todoList": tasks
-    }
-    return jsonify(response)
+    todoList = list(mongo.db.tasks.find({}, {'_id': 0}))
+    return jsonify(todoList), 200
 
 @app.post("/tasks")
 def addtask():
     data = request.get_json()
-    try:
-        task = schema.load(data)
-    except ValidationError as err:
-        return jsonify(err.messages), 401
-    tasks.append(task)
-    return jsonify(task), 201
+    result = mongo.db.tasks.insert_one(data)
+    return '', 200
 
 @app.patch("/tasks/<int:task_id>")
 def update_task(task_id):
     data = request.get_json()
-    try:
-        updates = update_schema.load(data)
-    except ValidationError as err:
-        return jsonify({"errors": err.messages}), 400
-
-    for task in tasks:
-        if task["taskId"] == task_id:
-            task.update(updates)
-            return jsonify(task), 200
-
-    return jsonify({"error": "Task ID not found"}), 404
+    task = mongo.db.tasks.find_one({'taskId': task_id})
+    if task is None:
+        return jsonify({"error": "Task ID not found!"}), 404
+    if 'taskId' in data:
+        mongo.db.tasks.update_one(
+            {"taskId": task_id},
+            {"$set": data}
+        )
+    if 'taskname' in data:
+        mongo.db.tasks.update_one(
+            {"taskId": task_id},
+            {"$set": data}
+        )
+    if 'completed' in data:
+        mongo.db.tasks.update_one(
+            {"taskId": task_id},
+            {"$set": data}
+        )
+    return '', 200
 
 @app.delete("/tasks/<int:task_id>")
 def delete_task(task_id):
-    for task in tasks:
-        if task["taskId"] == task_id:
-            tasks.remove(task)
-            return '', 204
-
-    return jsonify({"error": "Task ID not found"}), 404
+    try:
+        mongo.db.tasks.delete_one({"taskId": task_id})
+    except:
+        return jsonify({"Error": "Task ID not found"}), 404
+    return '', 200
