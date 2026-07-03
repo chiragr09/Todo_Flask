@@ -1,7 +1,5 @@
-from flask_wtf import FlaskForm
-from wtforms import StringField, BooleanField, SubmitField
-from wtforms. validators import DataRequired
+from marshmallow import Schema, fields
 
-class AddTaskForm(FlaskForm):
-    taskname = StringField('Add a task', validators=[DataRequired()])
-    submit = SubmitField('Add!')
+class AddTaskForm(Schema):
+    taskname = fields.String(required=True)
+    completed = fields.Boolean(load_default=False)

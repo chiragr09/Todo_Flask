@@ -1,27 +1,37 @@
-from flask import render_template, flash, redirect, url_for
+from flask import jsonify, request
 from app import app
 from app.forms import AddTaskForm
+from marshmallow import ValidationError
 
-@app.route('/')
-@app.route('/index')
-def index():
-    user = {"username": "Capybara"}
-    todoList = [
-        {
-            'taskname': 'Write back to Anil',
-            'completed': 'Yes'
-        },
-        {
-            'taskname': 'Cook dinner',
-            'completed': 'No'
-        }
-    ]
-    return render_template('index.html', title='Home', user=user, todoList=todoList)
+tasks = [
+    {
+        "taskname": "Write back to Anil",
+        "completed": True
+    },
+    {
+        "taskname": "Cook dinner",
+        "completed": False
+    }
+]
 
-@app.route('/addtask', methods=['GET', 'POST'])
+schema = AddTaskForm()
+
+@app.get("/tasks")
+def get_tasks():
+    response = {
+      "user": {
+        "username":"Capybara"
+      },
+      "todoList": tasks
+    }
+    return jsonify(response)
+
+@app.post("/tasks")
 def addtask():
-    form = AddTaskForm()
-    if form.validate_on_submit():
-        flash('Added the task successfully')
-        return redirect(url_for('index'))
-    return render_template('addtask.html', title='Add a task', form=form)
+    data = request.get_json()
+    try:
+        task = schema.load(data)
+    except ValidationError as err:
+        return jsonify(err.messages), 401
+    tasks.append(task)
+    return jsonify(task), 201
