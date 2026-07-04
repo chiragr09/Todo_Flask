@@ -3,3 +3,11 @@ backend/app/__pycache__
 venvlocal
 backend/config.py
 backend/app/database/__pycache__
+frontend/myapp/node_modules
+frontend/myapp/public
+frontend/myapp/src/assets
+frontend/myapp/src/App.css
+frontend/myapp/src/index.css
+frontend/myapp/.gitignore
+frontend/myapp/eslint.config.js
+frontend/node_modules
