@@ -103,7 +103,6 @@ function App() {
       <table>
         <thead style={styles.tableHeader}>
           <tr>
-            {/*<th>ID</th>*/}
             <th>Task</th>
             <th>Progress</th>
             <th>Action</th>
@@ -117,7 +116,6 @@ function App() {
           ) : (
             tasks.map((task) => (
               <tr>
-                {/*<td>{task.taskId}</td>*/}
                 <td>{task.taskname}</td>
                 <td>
                   <IsTaskCompleted
