@@ -1,15 +1,14 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import { styles } from "./styles"
 
 function App() {
   const [tasks, setTasks] = useState([])
   const [data, setdata] = useState({
-    taskId: 0,
     taskname: "",
     completed: false,
   })
   const [formData, setFormData] = useState({
-    taskId: 0,
     taskname: "",
   });
 
@@ -37,7 +36,6 @@ function App() {
     e.preventDefault();
     const payload = {
       ...formData,
-      taskId: Number(formData.taskId),
       completed: false,
     };
     try{
@@ -48,7 +46,6 @@ function App() {
       });
       fetchTasks();
       setFormData({
-        taskId: 0,
         taskname: "",
       })
       console.log(response.data);
@@ -71,6 +68,7 @@ function App() {
   };
 
   const handleDelete = async (id) => {
+    console.log("deleting:", id);
     try{
       const response = await axios.delete(`http://localhost:5000/tasks/${id}`, {
         headers: {
@@ -85,35 +83,63 @@ function App() {
 
   function IsTaskCompleted({ comp, taskid }) {
     if(comp) {
-      return <p>Status: Completed</p>
+      return <>Completed</>
     }
-    return <input type="button" onClick={() => handleButtonSubmit(taskid)} value={"Mark completed"}/>
+    return <input
+              type="button"
+              style={styles.buttonStyle}
+              onClick={() => handleButtonSubmit(taskid)}
+              value={"Mark completed"}
+            />
   }
 
   return (
     <>
-        {tasks.length === 0 ? (
-          <p>No tasks found.</p>
-        ) : (
-          tasks.map((task) => (
-            <div key={task.taskId}>
-              <p>ID: {task.taskId}</p>
-              <p>Task: {task.taskname}</p>
-              <IsTaskCompleted comp = {task.completed} taskid = {task.taskId}/>
-              <input type="button" onClick={() => handleDelete(task.taskId)} value="Delete this task"/>
-              <hr/>
-            </div>
-          ))
-        )}
+    <div style={styles.container}>
+      <div style={styles.header_cont}>
+        <h1 style={styles.header}>To-do application</h1>
+        <p style={styles.description}>Add your tasks, and mark them once completed!</p>
+      </div>
+      <table>
+        <thead style={styles.tableHeader}>
+          <tr>
+            {/*<th>ID</th>*/}
+            <th>Task</th>
+            <th>Progress</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody style={styles.tableContent}>
+          {tasks.length===0 ? (
+            <tr>
+              <td colSpan="4">No tasks found!</td>
+            </tr>
+          ) : (
+            tasks.map((task) => (
+              <tr>
+                {/*<td>{task.taskId}</td>*/}
+                <td>{task.taskname}</td>
+                <td>
+                  <IsTaskCompleted
+                    comp={task.completed}
+                    taskid={task._id}
+                  />
+                </td>
+                <td>
+                  <input
+                    type="button"
+                    value="Delete Task"
+                    style={styles.buttonStyle}
+                    onClick={() => handleDelete(task._id)}
+                  />
+                </td>
+              </tr>
+            )))}
+        </tbody>
+      </table>
+      <div style={styles.header}>
+        <h2>Add a new task!</h2>
         <form onSubmit={handleSubmit} method="post">
-          <label for="taskId">Task ID:</label><br/>
-          <input
-            type="number"
-            id="taskId"
-            name="taskId"
-            value={formData.taskId}
-            onChange={handleChange}
-          /><br/>
           <label for="taskname">Task Name:</label><br/>
           <input
             type="text"
@@ -124,6 +150,8 @@ function App() {
           /><br/>
           <input type="submit" value="Submit"/>
         </form>
+      </div>
+    </div>
     </>
   )
 }
